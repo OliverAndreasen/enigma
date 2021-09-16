@@ -1,11 +1,11 @@
 package com.company;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         // repeat always - until system.exit
         while (true) {
@@ -13,16 +13,19 @@ public class Main {
             System.out.println("Vælg mellem en form for kryptering:");
             System.out.println(" 1) Number cipher");
             System.out.println(" 2) Caesar cipher");
+            System.out.println(" 3) Vinigére cipher");
             System.out.println(" 0) afslut program");
-            System.out.print("vælg (0-1): ");
+            System.out.print("vælg (0-3): ");
             int type = scanner.nextInt();
             scanner.nextLine(); // FIX: Scanner Bug to ignore empty line
             if (type == 1) {
                 System.out.println("Number cipher");
                 System.out.println("-------------");
-            }
-            else if (type == 2) {
+            } else if (type == 2) {
                 System.out.println("Caesar cipher");
+                System.out.println("-------------");
+            } else if (type == 3) {
+                System.out.println("vigniére cipher");
                 System.out.println("-------------");
             } else if (type == 0) {
                 System.out.println("Du har afsluttet programmet");
@@ -36,13 +39,22 @@ public class Main {
                 encryptNumberMenu();
             } else if (type == 1 && mode == 'd') {
                 decryptNumberMenu();
-            }
-            else if (type == 2 && mode == 'e') {
+            } else if (type == 2 && mode == 'e') {
                 encryptCaesarMenu();
             } else if (type == 2 && mode == 'd') {
                 decryptCaesarMenu();
+            } else if (type == 3 && mode == 'e') {
+                encryptVigniereMenu();
+            } else if (type == 3 && mode == 'd') {
+                decryptVigniereMenu();
             }
+
         }
+
+        // Returns [2,4,10]
+        //System.out.println(Arrays.toString(vigniereEncrypt("abe", "abe")));
+        //int[] test = {2, 4, 10};
+        //System.out.println(vigniereDecrypt(test, "abe"));
 
     }
 
@@ -53,7 +65,7 @@ public class Main {
 
     public static int[] textToListOfNumbers(String text) {
         int[] numbers = new int[text.length()];
-        char[] letters = text.toCharArray();
+        char[] letters = text.toUpperCase().toCharArray();
 
         for (int i = 0; i < text.length(); i++) {
             numbers[i] = letterToNumber(letters[i]);
@@ -65,7 +77,6 @@ public class Main {
         String alfabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
         return alfabet.charAt(num);
     }
-
     public static String listOfNumbersToText(int[] numbers) {
         StringBuilder text = new StringBuilder();
         int length = numbers.length;
@@ -78,21 +89,26 @@ public class Main {
         return text.toString();
     }
 
-    // Caesar
-    public static void decryptCaesarMenu() {
-        // beder brugeren om ciphertext
+    public static void encryptNumberMenu() {
+        // beder brugeren om plaintext
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
-        System.out.println("Indtast krypteret tekst");
-        String cipherText = sc.nextLine();  // Read user input
-        // beder brugeren om shift-værdi
-        System.out.println("Indtast shift-værdien");
-        int shift = sc.nextInt();  // Read user input
-        //Omskriver positiv til negativ tal
-        shift = -shift;
-        // kalder caesarDecrypt med ciphertext og shift-værdi
-        String deCryptText = caesarDecrypt(cipherText, shift);
-        // udskriver plaintext modtaget fra ovenstående
-        System.out.println(deCryptText);
+        System.out.println("Hej indtast din besked du vil kryptere");
+        String text = sc.nextLine();  // Read user input
+        // kalder textToListOfNumbers
+        int[] encryptedText = textToListOfNumbers(text);
+        // udskriver ciphertext modtaget fra ovenstående
+        System.out.println(Arrays.toString(encryptedText));
+    }
+    public static void decryptNumberMenu() {
+        // beder brugeren om plaintext
+        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Hej indtast din besked du vil dekryptere");
+        String text = sc.nextLine();  // Read user input
+        int[] encrypted = stringToNumberArray(text);
+        // kalder textToListOfNumbers
+        String encryptedText = listOfNumbersToText(encrypted);
+        // udskriver ciphertext modtaget fra ovenstående
+        System.out.println(encryptedText);
     }
 
     public static void encryptCaesarMenu() {
@@ -108,31 +124,49 @@ public class Main {
         // udskriver ciphertext modtaget fra ovenstående
         System.out.println(encryptedText);
     }
+    public static void decryptCaesarMenu() {
+        // beder brugeren om ciphertext
+        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Indtast krypteret tekst");
+        String cipherText = sc.nextLine();  // Read user input
+        // beder brugeren om shift-værdi
+        System.out.println("Indtast shift-værdien");
+        int shift = sc.nextInt();  // Read user input
+        //Omskriver positiv til negativ tal
+        shift = -shift;
+        // kalder caesarDecrypt med ciphertext og shift-værdi
+        String deCryptText = decryptCaesar(cipherText, shift);
+        // udskriver plaintext modtaget fra ovenstående
+        System.out.println(deCryptText);
+    }
 
-    public static void encryptNumberMenu() {
+    public static void decryptVigniereMenu() {
+        // beder brugeren om ciphertext
+        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Indtast krypteret tekst");
+        String cipherText = sc.nextLine();  // Read user input
+        int[] encrypted = stringToNumberArray(cipherText);
+        System.out.println("Indtast keyword");
+        String keyword = sc.nextLine();  // Read user input
+        // kalder caesarDecrypt med ciphertext og shift-værdi
+        String deCryptText = vigniereDecrypt(encrypted, keyword);
+        // udskriver plaintext modtaget fra ovenstående
+        System.out.println(deCryptText);
+    }
+    public static void encryptVigniereMenu() {
+
         // beder brugeren om plaintext
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Hej indtast din besked du vil kryptere");
         String text = sc.nextLine();  // Read user input
-        // kalder textToListOfNumbers
-        int[] encryptedText = textToListOfNumbers(text);
+        // beder brugeren om shift-værdi
+        System.out.println("Indtast nøgle-ord");
+        String keyword = sc.nextLine();
+        // kalder caesarEncrypt med ciphertext og shift-værdi
+        int[] encryptedText = vigniereEncrypt(text, keyword);
         // udskriver ciphertext modtaget fra ovenstående
         System.out.println(Arrays.toString(encryptedText));
     }
-
-    public static void decryptNumberMenu() {
-        // beder brugeren om plaintext
-        Scanner sc = new Scanner(System.in);  // Create a Scanner object
-        System.out.println("Hej indtast din besked du vil dekryptere");
-        String text = sc.nextLine();  // Read user input
-        int[] encrypted = Arrays.stream(text.substring(1, text.length()-1).split(","))
-                        .map(String::trim).mapToInt(Integer::parseInt).toArray();
-        // kalder textToListOfNumbers
-        String encryptedText = listOfNumbersToText(encrypted);
-        // udskriver ciphertext modtaget fra ovenstående
-        System.out.println(encryptedText);
-    }
-
 
 
 
@@ -143,7 +177,6 @@ public class Main {
         }
         return shiftNumbers;
     }
-
     public static int shiftNumber(int number, int shift) {
         int shiftNumber = number + shift;
         if (shiftNumber > 29) {
@@ -153,23 +186,21 @@ public class Main {
             int positiv = Math.abs(shiftNumber);
             shiftNumber = Math.abs(29 - positiv);
         }
-
         if (number == 0) {
             shiftNumber = 0;
         }
         return shiftNumber;
     }
 
-    public static String caesarDecrypt(String ciphertext, int shift) {
+    public static String decryptCaesar(String ciphertext, int shift) {
         ciphertext = ciphertext.toUpperCase();
         int[] listOfNumbers = textToListOfNumbers(ciphertext);
         int[] shiftListOfNumbers = shiftListOfNumbers(listOfNumbers, shift);
 
         return listOfNumbersToText(shiftListOfNumbers);
     }
-
-
     public static String caesarEncrypt(String plaintext, int shift) {
+
         plaintext = plaintext.toUpperCase();
         // textToListOfNumbers
         int[] textToListOfNumbers = textToListOfNumbers(plaintext);
@@ -178,4 +209,45 @@ public class Main {
         // listOfNumbersToText
         return listOfNumbersToText(shiftListOfNumbers);
     }
+
+    public static int[] vigniereEncrypt(String message, String keyword) {
+        int length = message.length();
+        int numb = 0;
+
+        int[] encryptedMessage = textToListOfNumbers(message);
+        int[] encryptedKeyWord = textToListOfNumbers(keyword);
+
+        int[] encryptedResult = new int[length];
+
+        for (int i = 0; i < length; i++) {
+            int shift = encryptedKeyWord[i];
+            encryptedResult[i] = shiftNumber(encryptedMessage[i], shift);
+
+        }
+
+        return encryptedResult;
+    }
+    public static String vigniereDecrypt(int[] encrytpted, String keyword) {
+
+        int[] encryptedKeyword = textToListOfNumbers(keyword);
+
+        int[] decrypted = new int[encrytpted.length];
+
+        for (int i = 0; i < encryptedKeyword.length; i++) {
+
+            decrypted[i] = (encrytpted[i] - encryptedKeyword[i]);
+
+        }
+
+        String result = listOfNumbersToText(decrypted);
+
+        return result;
+    }
+
+    public static int[] stringToNumberArray(String encryptedMessage) {
+        int[] encrypted = Arrays.stream(encryptedMessage.substring(1, encryptedMessage.length() - 1).split(","))
+                .map(String::trim).mapToInt(Integer::parseInt).toArray();
+        return encrypted;
+    }
+
 }
