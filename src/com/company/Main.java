@@ -1,5 +1,5 @@
 package com.company;
-import java.lang.reflect.Array;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -70,6 +70,7 @@ public class Main {
         String alfabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
         return alfabet.charAt(num);
     }
+
     public static String listOfNumbersToText(int[] numbers) {
         StringBuilder text = new StringBuilder();
         int length = numbers.length;
@@ -92,6 +93,7 @@ public class Main {
         // udskriver ciphertext modtaget fra ovenstående
         System.out.println(Arrays.toString(encryptedText));
     }
+
     public static void decryptNumberMenu() {
         // beder brugeren om plaintext
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
@@ -117,6 +119,7 @@ public class Main {
         // udskriver ciphertext modtaget fra ovenstående
         System.out.println(encryptedText);
     }
+
     public static void decryptCaesarMenu() {
         // beder brugeren om ciphertext
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
@@ -146,6 +149,7 @@ public class Main {
         // udskriver plaintext modtaget fra ovenstående
         System.out.println(deCryptText);
     }
+
     public static void encryptVigniereMenu() {
 
         // beder brugeren om plaintext
@@ -162,7 +166,6 @@ public class Main {
     }
 
 
-
     public static int[] shiftListOfNumbers(int[] numbers, int shift) {
         int[] shiftNumbers = new int[numbers.length];
         int length = numbers.length;
@@ -171,9 +174,10 @@ public class Main {
         }
         return shiftNumbers;
     }
+
     public static int shiftNumber(int number, int shift) {
 
-        int shiftNumber = number+shift;
+        int shiftNumber = number + shift;
         if (shiftNumber > 29) {
             shiftNumber = Math.abs(shiftNumber - 29);
         } else if (shiftNumber <= 0) {
@@ -188,6 +192,24 @@ public class Main {
         return shiftNumber;
     }
 
+    public static int shiftBackNumber(int number, int shift) {
+
+        int shiftNumber = number - shift;
+        if (shiftNumber > 29) {
+            shiftNumber = Math.abs(shiftNumber - 29);
+        } else if (shiftNumber <= 0) {
+            // omskriver negativt tal til et positvt tal
+            int positiv = Math.abs(shiftNumber);
+            shiftNumber = Math.abs(29 - positiv);
+        }
+
+        if (number == 0) {
+            shiftNumber = 0;
+        }
+        return shiftNumber;
+    }
+
+
     public static String decryptCaesar(String ciphertext, int shift) {
         ciphertext = ciphertext.toUpperCase();
         int[] listOfNumbers = textToListOfNumbers(ciphertext);
@@ -195,6 +217,7 @@ public class Main {
 
         return listOfNumbersToText(shiftListOfNumbers);
     }
+
     public static String caesarEncrypt(String plaintext, int shift) {
 
         plaintext = plaintext.toUpperCase();
@@ -220,17 +243,16 @@ public class Main {
 
             int shift = encryptedKeyWord[n];
             encryptedResult[i] = shiftNumber(encryptedMessage[i], shift);
-            if (n == encryptedKeyWord.length-1) {
+            if (n == encryptedKeyWord.length - 1) {
                 n = 0;
-            }
-            else{
-               n++;
+            } else {
+                n++;
             }
         }
         return encryptedResult;
     }
+
     public static String vigniereDecrypt(int[] encrypted, String keyword) {
-        // TODO: VIRKER IKKE :-(
         int length = encrypted.length;
         int[] encryptedKeyword = textToListOfNumbers(keyword);
         int[] decrypted = new int[encrypted.length];
@@ -238,18 +260,17 @@ public class Main {
 
         for (int i = 0; i < length; i++) {
             if (encrypted[i] != 0) {
-                decrypted[i] = (shiftNumber(encrypted[i], encryptedKeyword[n]));
+                decrypted[i] = (shiftBackNumber(encrypted[i], encryptedKeyword[n]));
+                n++;
+            } else {
+                decrypted[i] = 0;
                 n++;
             }
-            else
-            {
-              decrypted[i] = 0;
-            }
-            if (n == encryptedKeyword.length-1) {
+            if (n == encryptedKeyword.length) {
                 n = 0;
             }
         }
-
+        System.out.println(Arrays.toString(decrypted));
         String result = listOfNumbersToText(decrypted);
 
         return result;
