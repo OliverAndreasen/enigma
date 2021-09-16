@@ -270,7 +270,6 @@ public class Main {
                 n = 0;
             }
         }
-        System.out.println(Arrays.toString(decrypted));
         String result = listOfNumbersToText(decrypted);
 
         return result;
