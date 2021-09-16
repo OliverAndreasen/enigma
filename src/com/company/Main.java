@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-           // Test
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         // repeat always - until system.exit
@@ -50,12 +49,6 @@ public class Main {
             }
 
         }
-
-        // Returns [2,4,10]
-        //System.out.println(Arrays.toString(vigniereEncrypt("abe", "abe")));
-        //int[] test = {2, 4, 10};
-        //System.out.println(vigniereDecrypt(test, "abe"));
-
     }
 
     public static int letterToNumber(char letter) {
@@ -156,13 +149,12 @@ public class Main {
     public static void encryptVigniereMenu() {
 
         // beder brugeren om plaintext
-        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        Scanner sc = new Scanner(System.in);
         System.out.println("Hej indtast din besked du vil kryptere");
-        String text = sc.nextLine();  // Read user input
+        String text = sc.nextLine();
         // beder brugeren om shift-værdi
         System.out.println("Indtast nøgle-ord");
         String keyword = sc.nextLine();
-
         // kalder caesarEncrypt med ciphertext og shift-værdi
         int[] encryptedText = vigniereEncrypt(text, keyword);
         // udskriver ciphertext modtaget fra ovenstående
@@ -173,16 +165,13 @@ public class Main {
 
     public static int[] shiftListOfNumbers(int[] numbers, int shift) {
         int[] shiftNumbers = new int[numbers.length];
-        for (int i = 0; i < numbers.length; i++) {
+        int length = numbers.length;
+        for (int i = 0; i < length; i++) {
             shiftNumbers[i] = shiftNumber(numbers[i], shift);
         }
         return shiftNumbers;
     }
     public static int shiftNumber(int number, int shift) {
-
-        // FUNDET PÅ NETTET
-        // int shiftNumber = ((number + shift) % 28);
-        // /////////////////////////////////////////
 
         int shiftNumber = number+shift;
         if (shiftNumber > 29) {
@@ -218,16 +207,16 @@ public class Main {
     }
 
     public static int[] vigniereEncrypt(String message, String keyword) {
-        int length = message.length();
         int n = 0;
 
         int[] encryptedMessage = textToListOfNumbers(message);
+        int length = encryptedMessage.length;
 
         int[] encryptedKeyWord = textToListOfNumbers(keyword);
 
         int[] encryptedResult = new int[length];
 
-        for (int i = 0; i < encryptedMessage.length; i++) {
+        for (int i = 0; i < length; i++) {
 
             int shift = encryptedKeyWord[n];
             encryptedResult[i] = shiftNumber(encryptedMessage[i], shift);
@@ -242,11 +231,12 @@ public class Main {
     }
     public static String vigniereDecrypt(int[] encrypted, String keyword) {
         // TODO: VIRKER IKKE :-(
+        int length = encrypted.length;
         int[] encryptedKeyword = textToListOfNumbers(keyword);
         int[] decrypted = new int[encrypted.length];
         int n = 0;
 
-        for (int i = 0; i < encrypted.length; i++) {
+        for (int i = 0; i < length; i++) {
             if (encrypted[i] != 0) {
                 decrypted[i] = (shiftNumber(encrypted[i], encryptedKeyword[n]));
                 n++;
@@ -267,6 +257,8 @@ public class Main {
     }
 
     public static int[] stringToNumberArray(String encryptedMessage) {
+
+        // Fundet på nettet
         int[] encrypted = Arrays.stream(encryptedMessage.substring(1, encryptedMessage.length() - 1).split(","))
                 .map(String::trim).mapToInt(Integer::parseInt).toArray();
         return encrypted;
