@@ -1,6 +1,4 @@
 package com.company;
-
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -39,8 +37,7 @@ public class Main {
 
     public static int letterToNumber(char letter) {
         String alfabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
-        int number = alfabet.indexOf(letter);
-        return number;
+        return alfabet.indexOf(letter);
     }
 
     public static int[] textToListOfNumbers(String text) {
@@ -55,19 +52,19 @@ public class Main {
 
     public static char numberToLetter(int num) {
         String alfabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
-        char letter = alfabet.charAt(num);
-        return letter;
+        return alfabet.charAt(num);
     }
 
     public static String listOfNumbersToText(int[] numbers) {
-        String text = "";
+        StringBuilder text = new StringBuilder();
+        int length = numbers.length;
 
-        for (int i = 0; i < numbers.length; i++) {
+        for (int i = 0; i < length; i++) {
             int number = numbers[i];
             char letter = numberToLetter(number);
-            text = text + letter;
+            text.append(letter);
         }
-        return text;
+        return text.toString();
     }
 
     // Caesar
@@ -130,9 +127,8 @@ public class Main {
         ciphertext = ciphertext.toUpperCase();
         int[] listOfNumbers = textToListOfNumbers(ciphertext);
         int[] shiftListOfNumbers = shiftListOfNumbers(listOfNumbers, shift);
-        String result = listOfNumbersToText(shiftListOfNumbers);
 
-        return result;
+        return listOfNumbersToText(shiftListOfNumbers);
     }
 
 
@@ -143,8 +139,6 @@ public class Main {
         // shiftListOfNumbers
         int[] shiftListOfNumbers = shiftListOfNumbers(textToListOfNumbers, shift);
         // listOfNumbersToText
-        String listOfNumbersToText = listOfNumbersToText(shiftListOfNumbers);
-
-        return listOfNumbersToText;
+        return listOfNumbersToText(shiftListOfNumbers);
     }
 }
