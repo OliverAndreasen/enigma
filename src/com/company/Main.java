@@ -1,4 +1,5 @@
 package com.company;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -10,12 +11,17 @@ public class Main {
         while (true) {
             System.out.println("Velkommen til Enigma-projektet!");
             System.out.println("Vælg mellem en form for kryptering:");
-            System.out.println(" 1) Caesar cipher");
+            System.out.println(" 1) Number cipher");
+            System.out.println(" 2) Caesar cipher");
             System.out.println(" 0) afslut program");
             System.out.print("vælg (0-1): ");
             int type = scanner.nextInt();
             scanner.nextLine(); // FIX: Scanner Bug to ignore empty line
             if (type == 1) {
+                System.out.println("Number cipher");
+                System.out.println("-------------");
+            }
+            else if (type == 2) {
                 System.out.println("Caesar cipher");
                 System.out.println("-------------");
             } else if (type == 0) {
@@ -27,8 +33,13 @@ public class Main {
             char mode = scanner.nextLine().charAt(0);
 
             if (type == 1 && mode == 'e') {
-                encryptCaesarMenu();
+                encryptNumberMenu();
             } else if (type == 1 && mode == 'd') {
+                decryptNumberMenu();
+            }
+            else if (type == 2 && mode == 'e') {
+                encryptCaesarMenu();
+            } else if (type == 2 && mode == 'd') {
                 decryptCaesarMenu();
             }
         }
@@ -97,6 +108,32 @@ public class Main {
         // udskriver ciphertext modtaget fra ovenstående
         System.out.println(encryptedText);
     }
+
+    public static void encryptNumberMenu() {
+        // beder brugeren om plaintext
+        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Hej indtast din besked du vil kryptere");
+        String text = sc.nextLine();  // Read user input
+        // kalder textToListOfNumbers
+        int[] encryptedText = textToListOfNumbers(text);
+        // udskriver ciphertext modtaget fra ovenstående
+        System.out.println(Arrays.toString(encryptedText));
+    }
+
+    public static void decryptNumberMenu() {
+        // beder brugeren om plaintext
+        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("Hej indtast din besked du vil dekryptere");
+        String text = sc.nextLine();  // Read user input
+        int[] encrypted = Arrays.stream(text.substring(1, text.length()-1).split(","))
+                        .map(String::trim).mapToInt(Integer::parseInt).toArray();
+        // kalder textToListOfNumbers
+        String encryptedText = listOfNumbersToText(encrypted);
+        // udskriver ciphertext modtaget fra ovenstående
+        System.out.println(encryptedText);
+    }
+
+
 
 
     public static int[] shiftListOfNumbers(int[] numbers, int shift) {
