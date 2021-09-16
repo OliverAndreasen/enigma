@@ -1,4 +1,5 @@
 package com.company;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -15,7 +16,6 @@ public class Main {
             System.out.println(" 3) Vinigére cipher");
             System.out.println(" 0) afslut program");
             System.out.print("vælg (0-3): ");
-            System.out.println("Omegalul");
             int type = scanner.nextInt();
             scanner.nextLine(); // FIX: Scanner Bug to ignore empty line
             if (type == 1) {
@@ -162,6 +162,7 @@ public class Main {
         // beder brugeren om shift-værdi
         System.out.println("Indtast nøgle-ord");
         String keyword = sc.nextLine();
+
         // kalder caesarEncrypt med ciphertext og shift-værdi
         int[] encryptedText = vigniereEncrypt(text, keyword);
         // udskriver ciphertext modtaget fra ovenstående
@@ -178,7 +179,12 @@ public class Main {
         return shiftNumbers;
     }
     public static int shiftNumber(int number, int shift) {
-        int shiftNumber = number + shift;
+
+        // FUNDET PÅ NETTET
+        // int shiftNumber = ((number + shift) % 28);
+        // /////////////////////////////////////////
+
+        int shiftNumber = number+shift;
         if (shiftNumber > 29) {
             shiftNumber = Math.abs(shiftNumber - 29);
         } else if (shiftNumber <= 0) {
@@ -186,6 +192,7 @@ public class Main {
             int positiv = Math.abs(shiftNumber);
             shiftNumber = Math.abs(29 - positiv);
         }
+
         if (number == 0) {
             shiftNumber = 0;
         }
@@ -212,36 +219,51 @@ public class Main {
 
     public static int[] vigniereEncrypt(String message, String keyword) {
         int length = message.length();
-        int numb = 0;
+        int n = 0;
 
         int[] encryptedMessage = textToListOfNumbers(message);
+
         int[] encryptedKeyWord = textToListOfNumbers(keyword);
 
         int[] encryptedResult = new int[length];
 
-        for (int i = 0; i < length; i++) {
-            int shift = encryptedKeyWord[i];
+        for (int i = 0; i < encryptedMessage.length; i++) {
+
+            int shift = encryptedKeyWord[n];
             encryptedResult[i] = shiftNumber(encryptedMessage[i], shift);
-
+            if (n == encryptedKeyWord.length-1) {
+                n = 0;
+            }
+            else{
+               n++;
+            }
         }
-
         return encryptedResult;
     }
-    public static String vigniereDecrypt(int[] encrytpted, String keyword) {
-
+    public static String vigniereDecrypt(int[] encrypted, String keyword) {
+        // TODO: VIRKER IKKE :-(
         int[] encryptedKeyword = textToListOfNumbers(keyword);
+        int[] decrypted = new int[encrypted.length];
+        int n = 0;
 
-        int[] decrypted = new int[encrytpted.length];
-
-        for (int i = 0; i < encryptedKeyword.length; i++) {
-
-            decrypted[i] = (encrytpted[i] - encryptedKeyword[i]);
-
+        for (int i = 0; i < encrypted.length; i++) {
+            if (encrypted[i] != 0) {
+                decrypted[i] = (shiftNumber(encrypted[i], encryptedKeyword[n]));
+                n++;
+            }
+            else
+            {
+              decrypted[i] = 0;
+            }
+            if (n == encryptedKeyword.length-1) {
+                n = 0;
+            }
         }
 
         String result = listOfNumbersToText(decrypted);
 
         return result;
+
     }
 
     public static int[] stringToNumberArray(String encryptedMessage) {
