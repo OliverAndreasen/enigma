@@ -15,6 +15,7 @@ public class Main {
             System.out.println(" 3) Vinigére cipher");
             System.out.println(" 0) afslut program");
             System.out.print("vælg (0-3): ");
+            System.out.println("Omegalul");
             int type = scanner.nextInt();
             scanner.nextLine(); // FIX: Scanner Bug to ignore empty line
             if (type == 1) {
