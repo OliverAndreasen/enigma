@@ -128,10 +128,8 @@ public class Main {
         // beder brugeren om shift-værdi
         System.out.println("Indtast shift-værdien");
         int shift = sc.nextInt();  // Read user input
-        //Omskriver positiv til negativ tal
-        shift = -shift;
         // kalder caesarDecrypt med ciphertext og shift-værdi
-        String deCryptText = decryptCaesar(cipherText, shift);
+        String deCryptText = caesarEncrypt(cipherText, -shift);
         // udskriver plaintext modtaget fra ovenstående
         System.out.println(deCryptText);
     }
@@ -141,11 +139,10 @@ public class Main {
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Indtast krypteret tekst");
         String cipherText = sc.nextLine();  // Read user input
-        int[] encrypted = stringToNumberArray(cipherText);
         System.out.println("Indtast keyword");
         String keyword = sc.nextLine();  // Read user input
         // kalder caesarDecrypt med ciphertext og shift-værdi
-        String deCryptText = vigniereDecrypt(encrypted, keyword);
+        String deCryptText = vigniereDecrypt(cipherText, keyword);
         // udskriver plaintext modtaget fra ovenstående
         System.out.println(deCryptText);
     }
@@ -160,9 +157,9 @@ public class Main {
         System.out.println("Indtast nøgle-ord");
         String keyword = sc.nextLine();
         // kalder caesarEncrypt med ciphertext og shift-værdi
-        int[] encryptedText = vigniereEncrypt(text, keyword);
+        String encryptedText = vigniereEncrypt(text, keyword);
         // udskriver ciphertext modtaget fra ovenstående
-        System.out.println(Arrays.toString(encryptedText));
+        System.out.println(encryptedText);
     }
 
 
@@ -209,15 +206,6 @@ public class Main {
         return shiftNumber;
     }
 
-
-    public static String decryptCaesar(String ciphertext, int shift) {
-        ciphertext = ciphertext.toUpperCase();
-        int[] listOfNumbers = textToListOfNumbers(ciphertext);
-        int[] shiftListOfNumbers = shiftListOfNumbers(listOfNumbers, shift);
-
-        return listOfNumbersToText(shiftListOfNumbers);
-    }
-
     public static String caesarEncrypt(String plaintext, int shift) {
 
         plaintext = plaintext.toUpperCase();
@@ -229,7 +217,7 @@ public class Main {
         return listOfNumbersToText(shiftListOfNumbers);
     }
 
-    public static int[] vigniereEncrypt(String message, String keyword) {
+    public static String vigniereEncrypt(String message, String keyword) {
         int n = 0;
 
         int[] encryptedMessage = textToListOfNumbers(message);
@@ -249,18 +237,19 @@ public class Main {
                 n++;
             }
         }
-        return encryptedResult;
+        return listOfNumbersToText(encryptedResult);
     }
 
-    public static String vigniereDecrypt(int[] encrypted, String keyword) {
-        int length = encrypted.length;
+    public static String vigniereDecrypt(String encrypted, String keyword) {
+        int[] encryptedMessage = textToListOfNumbers(encrypted);
+
         int[] encryptedKeyword = textToListOfNumbers(keyword);
-        int[] decrypted = new int[encrypted.length];
+        int[] decrypted = new int[encryptedMessage.length];
         int n = 0;
 
-        for (int i = 0; i < length; i++) {
-            if (encrypted[i] != 0) {
-                decrypted[i] = (shiftBackNumber(encrypted[i], encryptedKeyword[n]));
+        for (int i = 0; i < encryptedMessage.length; i++) {
+            if (encryptedMessage[i] != 0) {
+                decrypted[i] = (shiftBackNumber(encryptedMessage[i], encryptedKeyword[n]));
                 n++;
             } else {
                 decrypted[i] = 0;
